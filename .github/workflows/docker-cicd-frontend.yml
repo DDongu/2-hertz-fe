@@ -84,12 +84,11 @@ jobs:
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           IMAGE_TAG="${BRANCH}-${SHORT_SHA}"
 
-          # if [ "$BRANCH" = "main" ]; then
-          #   ENV_TAG="main-latest"
-          # else
-          #   ENV_TAG="develop-latest"
-          # fi
-          ENV_TAG="develop-latest"
+          if [ "$BRANCH" = "main" ]; then
+            ENV_TAG="main-latest"
+          else
+            ENV_TAG="develop-latest"
+          fi
 
           echo "BRANCH=$BRANCH" >> $GITHUB_ENV
           echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
@@ -493,12 +492,6 @@ jobs:
 
           load_param "/global/GITHUB_TOKEN" GITHUB_TOKEN
           load_param "/global/TFC_TOKEN" TF_TOKEN_app_terraform_io
-
-          if [ ${{ env.BRANCH }} = main ]; then
-            echo "ENV=PROD" >> $GITHUB_ENV
-          else
-            echo "ENV=DEV" >> $GITHUB_ENV
-          fi
 
       - name: Notify for Dev Rollback
         if: env.ENV == 'DEV'
