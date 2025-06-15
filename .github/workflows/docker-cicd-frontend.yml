@@ -264,9 +264,10 @@ jobs:
           RETRY=10
           SLEEP_SEC=30
 
-          echo "🩺 $MIG_NAME 인스턴스 헬스체크 시작..."
-          sleep 60 # Wait for instances to initialize
+          echo "⏱ 60초 대기 중... 인스턴스 초기화 및 헬스체크 준비"
+          sleep 60
 
+          echo "🩺 $MIG_NAME 인스턴스 헬스체크 시작..."
           for i in $(seq 1 $RETRY); do
             echo "[$i/$RETRY] $MIG_NAME 인스턴스 상태 확인 중..."
             gcloud compute instance-groups managed list-instances "$MIG_NAME" --region="$REGION" --format="value(status,version.instanceTemplate,instanceHealth[0].detailedHealthState)" > states.txt
