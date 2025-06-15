@@ -152,7 +152,7 @@ jobs:
     env:
       BRANCH: ${{ needs.frontend-ci.outputs.BRANCH }}
       SHORT_SHA: ${{ needs.frontend-ci.outputs.SHORT_SHA }}
-      IMAGE: ${{ needs.frontend-ci.outputs.FULL_IMAGE }}
+      # IMAGE: ${{ needs.frontend-ci.outputs.FULL_IMAGE }}
     outputs:
       BRANCH: ${{ env.BRANCH }}
       ACTIVE: ${{ steps.active.outputs.active }}
@@ -349,7 +349,7 @@ jobs:
           echo "}" >> 01-deployment.auto.tfvars.json
 
           cat 01-deployment.auto.tfvars.json
-          terraform apply -auto-approve -target=module.frontend_ig
+          terraform apply -auto-approve
 
       - name: Wait before health check
         if: env.ENV == 'PROD'
@@ -404,7 +404,7 @@ jobs:
           echo "  \"traffic_weight_${ACTIVE}_frontend\": 50," >> 02-shift-half.auto.tfvars.json
           echo "  \"traffic_weight_${TARGET}_frontend\": 50" >> 02-shift-half.auto.tfvars.json
           echo "}" >> 02-shift-half.auto.tfvars.json
-          terraform apply -auto-approve -target=module.frontend_ig
+          terraform apply -auto-approve
 
       - name: Write tfvars for shift traffic (full)
         if: env.ENV == 'PROD'
@@ -416,7 +416,7 @@ jobs:
           echo "  \"traffic_weight_${ACTIVE}_frontend\": 0," >> 03-shift-full.auto.tfvars.json
           echo "  \"traffic_weight_${TARGET}_frontend\": 100" >> 03-shift-full.auto.tfvars.json
           echo "}" >> 03-shift-full.auto.tfvars.json
-          terraform apply -auto-approve -target=module.frontend_ig
+          terraform apply -auto-approve
 
       - name: Scale Down Previous Environment
         if: env.ENV == 'PROD'
@@ -426,7 +426,7 @@ jobs:
           echo "{" > 04-scale-down.auto.tfvars.json
           echo "  \"${ACTIVE}_instance_count_frontend\": {\"min\":0, \"max\":0}" >> 04-scale-down.auto.tfvars.json
           echo "}" >> 04-scale-down.auto.tfvars.json
-          terraform apply -auto-approve -target=module.frontend_ig
+          terraform apply -auto-approve
 
       - name: Notify Discord on Success
         if: success()
@@ -562,7 +562,7 @@ jobs:
           echo "  \"green_instance_count_backend\": ${GREEN_COUNT_BACKEND}" >> 999-rollback.auto.tfvars.json
           echo "}" >> 999-rollback.auto.tfvars.json
 
-          terraform apply -auto-approve -target=module.frontend_ig
+          terraform apply -auto-approve
 
       - name: Send success notification
         if: success() && env.ENV == 'PROD'
