@@ -296,32 +296,33 @@ jobs:
           echo "❌ ${RETRY}회 시도 후에도 MIG 인스턴스가 HEALTHY 상태가 아닙니다."
           exit 1
 
-      - name: Terraform Output Directly
-        working-directory: tf-code/terraform/gcp/environments/prod
-        run: |
-          terraform init -reconfigure
-          terraform output -json > outputs.json
-          echo "❤️❤️❤️❤️outputs.json❤️❤️❤️❤️
-          cat outputs.json
+      # - name: Terraform Output Directly
+      #   working-directory: tf-code/terraform/gcp/environments/prod
+      #   run: |
+      #     terraform init -reconfigure
+      #     terraform output -json > outputs.json
+      #     echo "❤️❤️❤️❤️outputs.json❤️❤️❤️❤️
+      #     cat outputs.json
 
-          echo "❤️❤️❤️❤️output❤️❤️❤️❤️
-          terraform output -json
+      #     echo "❤️❤️❤️❤️output❤️❤️❤️❤️
+      #     terraform output -json
 
       - name: Get Active Deployment Color
         if: env.ENV == 'PROD'
         id: active
         working-directory: tf-code/terraform/gcp/environments/prod
         run: |
+            terraform init -reconfigure
             
-            echo "❤️❤️❤️❤️1❤️❤️❤️❤️
-            BLUE_MAX=$(jq -r '.blue_instance_count_frontend.value.max' outputs.json)
-            echo "❤️❤️❤️❤️2 BLUE_MAX=$BLUE_MAX❤️❤️❤️❤️"
-
-
-            # BLUE_MAX=$(terraform output -json | jq -r '.blue_instance_count_frontend.value.max')
+            # echo "❤️❤️❤️❤️1❤️❤️❤️❤️
+            # BLUE_MAX=$(jq -r '.blue_instance_count_frontend.value.max' outputs.json)
             # echo "❤️❤️❤️❤️2 BLUE_MAX=$BLUE_MAX❤️❤️❤️❤️"
-            # GREEN_MAX=$(terraform output -json | jq -r '.green_instance_count_frontend.value.max')
-            # echo "❤️❤️❤️❤️3 GREEN_MAX=$GREEN_MAX❤️❤️❤️❤️"
+
+
+            BLUE_MAX=$(terraform output -json | jq -r '.blue_instance_count_frontend.value.max')
+            echo "❤️❤️❤️❤️2 BLUE_MAX=$BLUE_MAX❤️❤️❤️❤️"
+            GREEN_MAX=$(terraform output -json | jq -r '.green_instance_count_frontend.value.max')
+            echo "❤️❤️❤️❤️3 GREEN_MAX=$GREEN_MAX❤️❤️❤️❤️"
 
   #           if [ "$BLUE_MAX" = "0" ]; then
   #             echo "✅ Active deployment is GREEN"
