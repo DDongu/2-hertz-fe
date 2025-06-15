@@ -300,8 +300,12 @@ jobs:
         working-directory: tf-code/terraform/gcp/environments/prod
         run: |
           terraform init -reconfigure
-          terraform output -json > outputs.json\
+          terraform output -json > outputs.json
+          echo "❤️❤️❤️❤️outputs.json❤️❤️❤️❤️
           cat outputs.json
+
+          echo "❤️❤️❤️❤️output❤️❤️❤️❤️
+          terraform output -json
 
       - name: Get Active Deployment Color
         if: env.ENV == 'PROD'
