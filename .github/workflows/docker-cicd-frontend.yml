@@ -355,12 +355,10 @@ jobs:
           echo "}" >> 01-deployment.auto.tfvars.json
 
           cat 01-deployment.auto.tfvars.json
-          # terraform apply -auto-approve \
-          #   -target=module.frontend_tg \
-          #   -target=module.frontend_asg_green \
-          #   -target=module.frontend_asg_blue
-          terraform apply -auto-approve
-
+          terraform apply -auto-approve \
+            -target=module.frontend_tg \
+            -target=module.frontend_asg_green \
+            -target=module.frontend_asg_blue
           
 
       - name: Wait before health check
@@ -424,11 +422,10 @@ jobs:
           echo "  \"traffic_weight_${ACTIVE}_frontend\": 50," >> 02-shift-half.auto.tfvars.json
           echo "  \"traffic_weight_${TARGET}_frontend\": 50" >> 02-shift-half.auto.tfvars.json
           echo "}" >> 02-shift-half.auto.tfvars.json
-          # terraform apply -auto-approve \
-          #   -target=module.frontend_tg \
-          #   -target=module.frontend_asg_green \
-          #   -target=module.frontend_asg_blue
-          terraform apply -auto-approve
+          terraform apply -auto-approve \
+            -target=module.frontend_tg \
+            -target=module.frontend_asg_green \
+            -target=module.frontend_asg_blue
 
       - name: Write tfvars for shift traffic (full)
         if: env.ENV == 'PROD'
@@ -440,11 +437,10 @@ jobs:
           echo "  \"traffic_weight_${ACTIVE}_frontend\": 0," >> 03-shift-full.auto.tfvars.json
           echo "  \"traffic_weight_${TARGET}_frontend\": 100" >> 03-shift-full.auto.tfvars.json
           echo "}" >> 03-shift-full.auto.tfvars.json
-          # terraform apply -auto-approve \
-          #   -target=module.frontend_tg \
-          #   -target=module.frontend_asg_green \
-          #   -target=module.frontend_asg_blue
-          terraform apply -auto-approve
+          terraform apply -auto-approve \
+            -target=module.frontend_tg \
+            -target=module.frontend_asg_green \
+            -target=module.frontend_asg_blue
           
 
       - name: Scale Down Previous Environment
@@ -455,11 +451,10 @@ jobs:
           echo "{" > 04-scale-down.auto.tfvars.json
           echo "  \"${ACTIVE}_instance_count_frontend\": {\"min\":0, \"max\":0}" >> 04-scale-down.auto.tfvars.json
           echo "}" >> 04-scale-down.auto.tfvars.json
-          # terraform apply -auto-approve \
-          #   -target=module.frontend_tg \
-          #   -target=module.frontend_asg_green \
-          #   -target=module.frontend_asg_blue
-          terraform apply -auto-approve
+          terraform apply -auto-approve \
+            -target=module.frontend_tg \
+            -target=module.frontend_asg_green \
+            -target=module.frontend_asg_blue
           
           terraform init -reconfigure
           BLUE_MAX=$(terraform output -json | jq -r '.blue_instance_count_frontend.value.max')
