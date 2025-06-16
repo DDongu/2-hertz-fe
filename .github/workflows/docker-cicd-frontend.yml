@@ -359,7 +359,7 @@ jobs:
           #   -target=module.frontend_tg \
           #   -target=module.frontend_asg_green \
           #   -target=module.frontend_asg_blue
-          terraform apply -auto-approve \
+          terraform apply -auto-approve
 
           
 
@@ -428,7 +428,7 @@ jobs:
           #   -target=module.frontend_tg \
           #   -target=module.frontend_asg_green \
           #   -target=module.frontend_asg_blue
-          terraform apply -auto-approve \
+          terraform apply -auto-approve
 
       - name: Write tfvars for shift traffic (full)
         if: env.ENV == 'PROD'
@@ -444,7 +444,7 @@ jobs:
           #   -target=module.frontend_tg \
           #   -target=module.frontend_asg_green \
           #   -target=module.frontend_asg_blue
-          terraform apply -auto-approve \
+          terraform apply -auto-approve
           
 
       - name: Scale Down Previous Environment
@@ -459,7 +459,7 @@ jobs:
           #   -target=module.frontend_tg \
           #   -target=module.frontend_asg_green \
           #   -target=module.frontend_asg_blue
-          terraform apply -auto-approve \
+          terraform apply -auto-approve
           
           terraform init -reconfigure
           BLUE_MAX=$(terraform output -json | jq -r '.blue_instance_count_frontend.value.max')
