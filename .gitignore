@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Actions 로컬 테스트를 위한 act 툴 관련
+.secrets
