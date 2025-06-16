@@ -254,7 +254,7 @@ jobs:
 
           cat 01-deployment.auto.tfvars.json
 
-          terraform apply -auto-approvet-target=module.frontend_ig
+          terraform apply -auto-approvet -target=module.frontend_ig
 
           echo "💾 Output 적용 중 ..."
           terraform apply -refresh-only -auto-approve
@@ -347,11 +347,11 @@ jobs:
           #GREEN_COUNT_BACKEND=$(jq -c '.green_instance_count_backend.value' outputs.json)
 
           echo "{" > 01-deployment.auto.tfvars.json
-          echo "  \"traffic_weight_${ACTIVE}_frontend\": 100," >> 01-deployment.auto.tfvars.json
-          echo "  \"traffic_weight_${TARGET}_frontend\": 0," >> 01-deployment.auto.tfvars.json
           echo "  \"docker_image_front_${TARGET}\": \"${{ env.IMAGE }}\"," >> 01-deployment.auto.tfvars.json
-          echo "  \"${ACTIVE}_instance_count_frontend\": {\"min\": 1, \"max\": 2}," >> 01-deployment.auto.tfvars.json
+          echo "  \"traffic_weight_${TARGET}_frontend\": 0," >> 01-deployment.auto.tfvars.json
           echo "  \"${TARGET}_instance_count_frontend\": {\"min\": 1, \"max\": 2}" >> 01-deployment.auto.tfvars.json
+          # echo "  \"traffic_weight_${ACTIVE}_frontend\": 100," >> 01-deployment.auto.tfvars.json
+          # echo "  \"${ACTIVE}_instance_count_frontend\": {\"min\": 1, \"max\": 2}," >> 01-deployment.auto.tfvars.json
           # echo "  \"traffic_weight_blue_backend\": ${BLUE_WEIGHT_BACKEND}," >> 01-deployment.auto.tfvars.json
           # echo "  \"traffic_weight_green_backend\": ${GREEN_WEIGHT_BACKEND}," >> 01-deployment.auto.tfvars.json
           # echo "  \"blue_instance_count_backend\": ${BLUE_COUNT_BACKEND}," >> 01-deployment.auto.tfvars.json
@@ -361,8 +361,7 @@ jobs:
           cat 01-deployment.auto.tfvars.json
           terraform apply -auto-approve \
             -target=module.frontend_tg \
-            -target=module.frontend_asg_green \
-            -target=module.frontend_asg_blue
+            -target=module.frontend_asg_${TARGET}
           
           echo "💾 Output 적용 중 ..."
           terraform apply -refresh-only -auto-approve
@@ -600,7 +599,6 @@ jobs:
           # echo "  \"${ACTIVE}_instance_count_frontend\": {\"min\": 1, \"max\": 2}," >> 999-rollback.auto.tfvars.json
           echo "}" >> 999-rollback.auto.tfvars.json
 
-          # terraform apply -auto-approve-target=module.frontend_tg
           terraform apply -auto-approve \
             -target=module.frontend_asg_${ACTIVE}.google_compute_region_autoscaler.this \
             -target=module.frontend_asg_${TARGET}.google_compute_region_autoscaler.this \
