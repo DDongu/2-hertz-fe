@@ -411,10 +411,10 @@ jobs:
 
           terraform init -reconfigure
             
-            BLUE_MAX=$(terraform output -json | jq -r '.blue_instance_count_frontend.value.max')
-            GREEN_MAX=$(terraform output -json | jq -r '.green_instance_count_frontend.value.max')
-            echo "BLUE_MAX-before-half: $BLUE_MAX"
-            echo "GREEN_MAX-before-half: $GREEN_MAX"
+          BLUE_MAX=$(terraform output -json | jq -r '.blue_instance_count_frontend.value.max')
+          GREEN_MAX=$(terraform output -json | jq -r '.green_instance_count_frontend.value.max')
+          echo "BLUE_MAX-before-half: $BLUE_MAX"
+          echo "GREEN_MAX-before-half: $GREEN_MAX"
 
           ACTIVE=${{ steps.active.outputs.active }}
           TARGET=${{ steps.color.outputs.target }}
@@ -424,8 +424,8 @@ jobs:
           echo "}" >> 02-shift-half.auto.tfvars.json
           terraform apply -auto-approve \
             -target=module.frontend_tg \
-            -target=module.frontend_asg_green \
-            -target=module.frontend_asg_blue
+            # -target=module.frontend_asg_green.google_compute_region_autoscaler \
+            # -target=module.frontend_asg_blue.google_compute_region_autoscaler
 
       - name: Write tfvars for shift traffic (full)
         if: env.ENV == 'PROD'
@@ -439,8 +439,8 @@ jobs:
           echo "}" >> 03-shift-full.auto.tfvars.json
           terraform apply -auto-approve \
             -target=module.frontend_tg \
-            -target=module.frontend_asg_green \
-            -target=module.frontend_asg_blue
+            # -target=module.frontend_asg_green \
+            # -target=module.frontend_asg_blue
           
 
       - name: Scale Down Previous Environment
@@ -452,9 +452,9 @@ jobs:
           echo "  \"${ACTIVE}_instance_count_frontend\": {\"min\":0, \"max\":0}" >> 04-scale-down.auto.tfvars.json
           echo "}" >> 04-scale-down.auto.tfvars.json
           terraform apply -auto-approve \
-            -target=module.frontend_tg \
-            -target=module.frontend_asg_green \
-            -target=module.frontend_asg_blue
+            # -target=module.frontend_tg \
+            -target=module.frontend_asg_green.google_compute_region_autoscaler \
+            -target=module.frontend_asg_blue.google_compute_region_autoscaler
           
           terraform init -reconfigure
           BLUE_MAX=$(terraform output -json | jq -r '.blue_instance_count_frontend.value.max')
