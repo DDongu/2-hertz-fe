@@ -360,7 +360,7 @@ jobs:
             -target=module.frontend_asg_green \
             -target=module.frontend_asg_blue
           
-          terraform apply -refresh-only
+          terraform apply -refresh-only -auto-approve
           terraform output -json
 
       - name: Wait before health check
@@ -429,7 +429,7 @@ jobs:
             # -target=module.frontend_asg_green.google_compute_region_autoscaler \
             # -target=module.frontend_asg_blue.google_compute_region_autoscaler
 
-          terraform apply -refresh-only
+          terraform apply -refresh-only -auto-approve
           terraform output -json
 
       - name: Write tfvars for shift traffic (full)
@@ -447,7 +447,7 @@ jobs:
             # -target=module.frontend_asg_green \
             # -target=module.frontend_asg_blue
 
-          terraform apply -refresh-only
+          terraform apply -refresh-only -auto-approve
           terraform output -json
           
 
@@ -470,7 +470,7 @@ jobs:
           echo "BLUE_MAX-after-scale-down: $BLUE_MAX"
           echo "GREEN_MAX-aftre-scale-down: $GREEN_MAX"
 
-          terraform apply -refresh-only
+          terraform apply -refresh-only -auto-approve
           terraform output -json
 
       - name: Notify Discord on Success
